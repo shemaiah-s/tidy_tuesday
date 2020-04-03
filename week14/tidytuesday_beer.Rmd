@@ -1,0 +1,66 @@
+---
+title: 'Tidy Tuesday: Beer Production'
+author: "Shemaiah S. Sotrah"
+date: "April 1, 2020"
+output: 
+  html_document:
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(highcharter)
+library(plotly)
+```
+
+## Load Data 
+
+```{r, message=FALSE}
+brewing_materials <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewing_materials.csv')
+beer_taxed <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_taxed.csv')
+brewer_size <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/brewer_size.csv')
+beer_states <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-31/beer_states.csv')
+
+head(brewing_materials)
+head(beer_taxed)
+head(brewer_size)
+head(beer_states)
+```
+
+
+## Data Manipulation
+
+```{r, message=FALSE}
+beer_states %>% #only viewing barrels in New Jersey
+  filter(state == "NJ") -> nj_beer
+
+head(nj_beer) #view dataframe
+```
+
+## Data Visualization
+
+```{r}
+hchart(nj_beer, "line", hcaes(x = year, y = barrels, group = type)) %>%
+  hc_title(text = "Production of Beer Barrels in New Jersey") -> plot_beer
+
+plot_beer
+```
+
+This TidyTuesday was lot of fun to make, especially since it was interactive. The highcharter website had plenty of examples that made it quite easy to learn. I was actually expecting it to be more complex, but it was quite similar to plotting in ggplot. It made me realize that once you know the foundation, you use that as a base to learn new concepts. 
+
+```{r, fig.width= 7.6, fig.height=4}
+nj_beer %>%
+  mutate(year = as.character(year)) %>%
+  ggplot(aes(x = year, y = barrels, group = type, color = type)) +
+  geom_point() + geom_line() + 
+  ggtitle("Production of Beer Barrels in New Jersey") +
+  labs(x = "Year", y = "Barrels", color = "Type") +
+  theme_classic() +
+  theme(legend.position = "bottom")-> p2
+
+ggplotly(p2)
+```
+
+An alternative to highcharter is plotly. It is more straight forward than highcharter especially if you are already familiar with ggplot. It is also more interactive than highcharter. Nonetheless, both are option for interactive data figures. 
