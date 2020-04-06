@@ -61,6 +61,7 @@ nj_beer %>%
   theme(legend.position = "bottom")-> p2
 
 ggplotly(p2)
+ggsave("nj_beer.png", plot = p2)
 ```
 
 An alternative to highcharter is plotly. It is more straight forward than highcharter, especially if you are already familiar with ggplot. It is also more interactive than highcharter. Nonetheless, both are options for interactive data figures. 
