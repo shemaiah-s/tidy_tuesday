@@ -44,8 +44,9 @@ head(tdf_stages)
 ## Visualize Data
 
 ```{r, fig.width= 9, fig.height= 5}
-ggplot(winner, aes(x = stage, y = number)) +
-  geom_point(aes(color = rider)) +
+ggplot(winner, aes(x = stage, y = number, color = rider, group = rider)) +
+  geom_point() +
+  geom_line()+
   facet_wrap(~year) +
   theme(axis.text = element_text(angle = 90)) +
   theme_bw() +
@@ -62,8 +63,7 @@ ggplot(winner, aes(x = stage, y = number)) +
 
 ```{r, fig.width= 9, fig.height= 5}
 plot_winner
-
-ggsave("plot_winner.png", plot = plot_winner)
+ggsave("plot_winner2.png", plot = plot_winner)
 ```
 
 ## Explanation
