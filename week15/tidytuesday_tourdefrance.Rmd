@@ -60,7 +60,13 @@ ggplot(winner, aes(x = stage, y = number)) +
   transition_states(stage, transition_length = 20, state_length = 25) 
 ```
 
+```{r, fig.width= 9, fig.height= 5}
+plot_winner
 
+ggsave("plot_winner.png", plot = plot_winner)
+```
 
+## Explanation
 
+In 2002 and 2003, both Lance Armstrong and Stuart O'Grady competed in the Tour de France. However, in 2002, Armstrong won and O'Grady won the following year. For this reason, I thought it would be interesting the compare the individual riders' times in each stage of the race for the two consecutive years. Gganimate was a good option for this. It allowed me freeze at each stage to compare stage times between the two riders. In this, way it made the information more digestible, especially when comparing over 2 years. 
 
