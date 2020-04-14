@@ -44,7 +44,7 @@ head(tdf_stages)
 
 ## Visualize Data
 
-```{r, 3fig.width= 9, fig.height= 5}
+```{r, fig.width= 9, fig.height= 5}
 ggplot(winner, aes(x = stage, y = number, fill = rider)) + 
   geom_col(position = "dodge") + #cols adjacent to each other instead of stacked
   facet_wrap(~year) + #compare two years side by side
@@ -57,8 +57,7 @@ ggplot(winner, aes(x = stage, y = number, fill = rider)) +
        subtitle = "2002 and 2003") -> plot_winner
 
 plot_winner + 
-  transition_states(stage) + 
-  shadow_mark()
+  transition_states(stage) 
 ```
 
 ```{r, fig.width= 9, fig.height= 5}
