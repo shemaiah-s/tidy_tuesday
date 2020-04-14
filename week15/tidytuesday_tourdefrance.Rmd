@@ -1,0 +1,72 @@
+---
+title: "TidyTuesday - Tour de France"
+author: "Shemaiah S. Sotrah"
+date: "4/8/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+library(transformr)
+```
+
+## Load Data
+
+```{r, message=FALSE}
+tdf_winners <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-07/tdf_winners.csv')
+
+stage_data <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-07/stage_data.csv')
+
+tdf_stages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-07/tdf_stages.csv')
+
+head(tdf_winners)
+head(stage_data)
+head(tdf_stages)
+```
+
+## Manipulate Data
+
+```{r, message=FALSE}
+ stage_data %>%
+  filter(year %in% c("2002", "2003"), #just to compare the two most recent years
+         rider %in% c("O'Grady Stuart", "Armstrong Lance")) %>% #compare winners
+  separate(time, into = c("number", "label"), sep = "S") %>% #to avoid being identified as character
+  separate(stage_results_id, into = c("label", "stage"), sep = "-") %>% #to avoid being identified as character
+  select(- label) %>% #not informative column
+  mutate(number = as.numeric(number)) %>% #changing both number and stage to numeric
+  mutate(stage = as.numeric(stage)) -> winner
+```
+
+## Visualize Data
+
+```{r, 3fig.width= 9, fig.height= 5}
+ggplot(winner, aes(x = stage, y = number, fill = rider)) + 
+  geom_col(position = "dodge") + #cols adjacent to each other instead of stacked
+  facet_wrap(~year) + #compare two years side by side
+  theme_classic() +
+  scale_fill_manual(values = c("skyblue1", "sienna1")) +
+  labs(x = "Race Stage",
+       y = "Time (sec)",
+       fill = "Rider",
+       title = "Race Time Comparison for Tour de France",
+       subtitle = "2002 and 2003") -> plot_winner
+
+plot_winner + 
+  transition_states(stage) + 
+  shadow_mark()
+```
+
+```{r, fig.width= 9, fig.height= 5}
+plot_winner
+ggsave("plot_winner3.png", plot = plot_winner) #saved without animation
+```
+
+## Explanation
+
+In 2002 and 2003, both Lance Armstrong and Stuart O'Grady competed in the Tour de France. However, in 2002, Armstrong won and O'Grady won the following year. For this reason, I thought it would be interesting the compare the individual riders' times in each stage of the race for the two consecutive years. Gganimate was a good option for this. It allowed me to isolate each stage to compare the stage times between the two riders. In this, way it made the information more digestible, especially when comparing over 2 years. 
+
