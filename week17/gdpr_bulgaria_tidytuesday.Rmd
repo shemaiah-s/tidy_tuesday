@@ -1,0 +1,56 @@
+---
+title: "GDPR Violations TidyTuesday"
+author: "Shemaiah S. Sotrah"
+date: "4/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(hrbrthemes)
+```
+
+## Load Data
+
+```{r}
+gdpr_violations <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-21/gdpr_violations.tsv')
+gdpr_text <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-21/gdpr_text.tsv')
+
+head(gdpr_violations)
+head(gdpr_text)
+```
+
+
+## Manipulate Data
+
+```{r}
+gdpr_violations %>%
+ filter(name == "Bulgaria") -> gdpr_bulgaria #only singles out Bulgaria
+
+```
+
+## Visualize Data
+
+```{r}
+ggplot(gdpr_bulgaria, aes(x = date, y = log(price))) + #log price so more comparable
+  geom_segment(aes(x = date, y = log(price),
+                   xend = date, #segments connect from date to point
+                   yend = 0), #all start from price 0
+                   color = "white") +
+  geom_point(color = "green", #changes color of circle
+             shape=20, #specific circle
+             size = 3) + #increased size of circle
+  theme_ft_rc() + #dark background
+  labs(y = "log price in euros",
+       title = "GDPR Violations in Bulgaria") +
+  coord_flip() -> p1 #switches the x and y axis for more visible labels
+
+p1
+
+ggsave("gdpr_bulgaria.png", plot = p1)
+```
+
+## Explanation
+
+  In this TidyTuesday, I used a lollipop chart. To me, it seemed similar to geom_col(), but it allowed me to have more than one data point for a given x and y. For example, the date 9/13/2019 had multiple prices, and this could neatly be shown with the conjunction of geom_point and geom_segment. Another feature seen in this plot was the flipping of the x and y axis. I thought this was incredibly useful in this case since labels in the x axis were longer. I also had fun with changing the theme to a darker background, which was something I had never tried before. It accented the data with brighter neon colors against the dark background. I did this using a new package that I discovers on github: hrbrthemes.  
